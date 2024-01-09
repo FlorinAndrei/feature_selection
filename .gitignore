@@ -1,1 +1,3 @@
 *.db
+elitist-cmaes-with-margin/*
+*.csv

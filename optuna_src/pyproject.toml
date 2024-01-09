@@ -1,0 +1,191 @@
+[build-system]
+requires = ["setuptools >= 61.1.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "optuna"
+description = "A hyperparameter optimization framework"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Takuya Akiba"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.7"
+dependencies = [
+  "alembic>=1.5.0",
+  "colorlog",
+  "numpy",
+  "packaging>=20.0",
+  "sqlalchemy>=1.3.0",
+  "tqdm",
+  "PyYAML",  # Only used in `optuna/cli.py`.
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+benchmark = [
+  "asv>=0.5.0",
+  "botorch",
+  "cma",
+  "scikit-optimize",
+  "virtualenv"
+]
+checking = [
+    "black",
+    "blackdoc",
+    "flake8",
+    "isort",
+    "mypy",
+    "mypy_boto3_s3",
+    "types-PyYAML",
+    "types-redis",
+    "types-setuptools",
+    "types-tqdm",
+    "typing_extensions>=3.10.0.0",
+]
+document = [
+    "ase",
+    "cma",
+    "cmaes>=0.10.0",  # optuna/samplers/_cmaes.py.
+    "botorch",
+    "distributed",
+    "fvcore",
+    "lightgbm",
+    "matplotlib!=3.6.0",
+    "mlflow",
+    "pandas",
+    "pillow",
+    "plotly>=4.9.0",  # optuna/visualization.
+    "scikit-learn",
+    "scikit-optimize",
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-gallery",
+    "sphinx-plotly-directive",
+    "sphinx_rtd_theme>=1.2.0",
+    "torch",
+    "torchaudio",
+    "torchvision",
+]
+integration = [
+    "botorch>=0.4.0",
+    "catboost>=0.26; sys_platform!='darwin'",
+    "catboost>=0.26,<1.2; sys_platform=='darwin'",
+    "cma",
+    "distributed",
+    "lightgbm",
+    "lightning",
+    "mlflow",
+    "pandas",
+    "pytorch-ignite",
+    "scikit-learn>=0.24.2",
+    "scikit-optimize",
+    "shap",
+    "tensorflow",
+    "torch",
+    "torchaudio",
+    "torchvision",
+    "wandb",
+    "xgboost",
+]
+optional = [
+    "boto3",  # optuna/artifacts/_boto3.py.
+    "botorch; python_version<='3.11'",  # optuna/terminator/gp/botorch.
+    "cmaes>=0.10.0",  # optuna/samplers/_cmaes.py.
+    "google-cloud-storage",  # optuna/artifacts/_gcs.py.
+    "matplotlib!=3.6.0",  # optuna/visualization/matplotlib.
+    "pandas",  # optuna/study.py.
+    "plotly>=4.9.0",  # optuna/visualization.
+    "redis",  # optuna/storages/redis.py.
+    "scikit-learn>=0.24.2",
+    # optuna/visualization/param_importances.py.
+]
+test = [
+    "coverage",
+    "fakeredis[lua]",
+    "kaleido",
+    "moto",
+    "pytest",
+    "scipy>=1.9.2; python_version>='3.8'",
+]
+
+[project.urls]
+homepage = "https://optuna.org/"
+repository = "https://github.com/optuna/optuna"
+documentation = "https://optuna.readthedocs.io"
+bugtracker = "https://github.com/optuna/optuna/issues"
+
+[project.scripts]
+optuna = "optuna.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["optuna*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "optuna.version.__version__"}
+
+[tool.setuptools.package-data]
+"optuna" = [
+    "storages/_rdb/alembic.ini",
+    "storages/_rdb/alembic/*.*",
+    "storages/_rdb/alembic/versions/*.*",
+    "py.typed",
+]
+
+[tool.black]
+line-length = 99
+target-version = ['py38']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | docs
+)/
+'''
+
+[tool.isort]
+profile = 'black'
+src_paths = ['optuna', 'tests', 'docs', 'benchmarks']
+skip_glob = ['docs/source/conf.py', '**/alembic/versions/*.py', 'tutorial/**/*.py']
+line_length = 99
+lines_after_imports = 2
+force_single_line = 'True'
+force_sort_within_sections = 'True'
+order_by_type = 'False'
+
+[tool.pytest.ini_options]
+addopts = "--color=yes"
+filterwarnings = 'ignore::optuna.exceptions.ExperimentalWarning'
+markers = [
+  "skip_coverage: marks tests are skipped when calculating the coverage",
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "integration: marks tests are related to integration",
+]
